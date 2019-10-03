@@ -1,0 +1,17 @@
+(C)2019 2nd-Creasion Records,inc
+This software is released under the MIT License.
+http://opensource.org/licenses/mit-license.php
+
+macOS専用のウェブサーバー死活監視スクリプトです。
+Crontabに設定してお使いください。
+ベッドサイドでの監視を目的に自分用に制作したものです。
+煮るなり焼くなりお好きに改造してお使い頂ければ幸いです。
+
+サーバーの環境によってはHTTPステータスコードによる判定を行なっているため誤動作する場合があります。
+その場合は環境に合わせてスクリプトをいじってください。
+
+なお、エラーがあるとアラーム音がなり警告音声が流れます。
+ログ記録だけでいい場合は該当スクリプトを削ってください。
+
+This is a web server alive monitoring script for macOS.
+Please set it to Crontab.
