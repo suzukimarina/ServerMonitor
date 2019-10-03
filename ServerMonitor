@@ -1,0 +1,35 @@
+#!/bin/bash
+
+#macOS専用WEBサーバー死活監視スクリプト
+#(C)2019 2nd-Creasion Records,inc
+#This software is released under the MIT License.
+#http://opensource.org/licenses/mit-license.php
+
+#定義
+TARGET_IP=157.7.137.196
+URL=https://2nd-creasion.biz/
+HTTP_CODE=$(curl --write-out %{http_code} --silent --output /dev/null ${URL})
+#お好きな警告音に差し替えてください。
+SOUND=$(cd $(dirname $(readlink $0 || echo $0));pwd)/Alert.mp3
+
+#子シェルに引き渡すための環境変数宣言
+export TARGRT_IP
+export HTTP_CODE
+export SOUND
+
+#HTTPステータスコード判定
+if [ $HTTP_CODE = 200 ]; then
+echo `date` 問題なく稼働しています。 >>$(cd $(dirname $(readlink $0 || echo $0));pwd)/log.txt
+else
+for ((i=0 ; i<15 ; i++))
+do
+afplay /System/Library/Sounds/Ping.aiff
+done
+
+#Httpd及びpingによるサーバー死活判定(並列実行のため子シェルも参照)
+echo `date` Webサーバーに異常が発生しています。 >>$(cd $(dirname $(readlink $0 || echo $0));pwd)/log.txt
+osascript -e 'say "Webサーバーに異常が発生しています。" using "Kyoko"'
+osascript -e 'display alert "WEBサーバーに異常が発生しています。"' >&/dev/null & bash Server_judgment
+fi
+exit 1
+fi

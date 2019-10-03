@@ -1,0 +1,22 @@
+#!/bin/bash
+
+#macOS専用WEBサーバー死活監視スクリプト（並列実行用子シェルスクリプト）
+#(C)2019 2nd-Creasion Records,inc
+#This software is released under the MIT License.
+#http://opensource.org/licenses/mit-license.php
+
+#サーバー死活判定
+ping -c 1 $TARGET_IP >&/dev/null
+if [ $? = 0 ]; then
+echo `date` サーバー自体は稼働していますがWEBサーバーの応答がありません。>>$(cd $(dirname $(readlink $0 || echo $0));pwd)/log.txt
+else
+echo `date` サーバーに致命的な障害が発生しています。 >>$(cd $(dirname $(readlink $0 || echo $0));pwd)/log.txt
+for ((i=0 ; i<3 ; i++))
+do
+afplay $SOUND
+done
+
+osascript -e 'say "サーバーに致命的な障害が発生しています。" using "Kyoko"'
+osascript -e 'display alert "サーバーに致命的な障害が発生しています。"' >&/dev/null
+fi
+exit 1
